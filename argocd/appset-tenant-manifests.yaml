@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: tenant-manifests
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: 'https://github.com/tomlnd/gitops-demo.git'
+        revision: master
+        directories:
+          - path: 'tenants/*'
+  template:
+    metadata:
+      name: 'tenant-{{.path.basename}}-manifests'
+    spec:
+      project: production
+      source:
+        repoURL: 'https://github.com/tomlnd/gitops-demo.git'
+        targetRevision: master
+        path: 'tenants/{{.path.basename}}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: 'tenant-{{.path.basename}}'
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        automated:
+          prune: false
+          selfHeal: true

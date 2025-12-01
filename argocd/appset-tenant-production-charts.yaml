@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: appset-production
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: 'https://github.com/tomlnd/gitops-demo.git'
+              revision: master
+              directories:
+                - path: 'tenants/*'
+          - list:
+              elements:
+                - app: hello-app
+  template:
+    metadata:
+      name: 'tenant-{{ path.basename }}-{{ app }}'
+    spec:
+      project: '{{ index .path.segments 1 }}'
+      source:
+        repoURL: 'https://github.com/tomlnd/gitops-demo.git'
+        targetRevision: master
+        path: 'apps/production/{{ app }}'
+        helm:
+          valueFiles:
+            - '/tenants/{{ path.basename }}/values.yaml'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: 'tenant-{{ path.basename }}'
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true

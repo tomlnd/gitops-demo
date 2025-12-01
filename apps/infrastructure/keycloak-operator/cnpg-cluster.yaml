@@ -1,0 +1,17 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-keycloak
+spec:
+  instances: 2
+  enablePDB: true
+  storage:
+    storageClass: managed-csi-premium-v2-retain
+    size: 10Gi
+  monitoring:
+    enablePodMonitor: true
+  enableSuperuserAccess: true
+  bootstrap:
+    initdb:
+      database: "keycloak"
+      owner: "keycloak"

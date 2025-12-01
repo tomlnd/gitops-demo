@@ -1,0 +1,27 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak-prod
+spec:
+  instances: 3
+  update:
+    strategy: Auto
+  db:
+    vendor: postgres
+    host: pooler-keycloak-rw
+    usernameSecret:
+      name: pg-keycloak-app
+      key: username
+    passwordSecret:
+      name: pg-keycloak-app
+      key: password
+  ingress:
+    enabled: false
+  http:
+    tlsSecret: keycloak-tls
+  hostname:
+    hostname: https://kc.domain.com
+    admin: https://admin.kc.domain.com
+    strict: true
+  proxy:
+    headers: xforwarded

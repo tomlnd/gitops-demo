@@ -1,0 +1,24 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azurefile-csi-premium-retain
+provisioner: file.csi.azure.com
+allowVolumeExpansion: true
+mountOptions:
+ - dir_mode=0777
+ - file_mode=0777
+ - uid=0
+ - gid=0
+ - mfsymlinks
+ - cache=strict
+ - nosharesock
+ - actimeo=30
+ - nobrl
+reclaimPolicy: Retain
+parameters:
+  skuName: Premium_LRS
+  accountAccessTier: Premium
+  enableLargeFileShares: "true"
+  shareNamePrefix: "tenant"
+  shareAccessTier: "Premium"
+  secretName: "azure-storage-account-secret"

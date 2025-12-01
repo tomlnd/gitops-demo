@@ -1,0 +1,52 @@
+###
+# - Bootstrap application for ArgoCD
+# - Deploy using `kubectl apply -f ./cluster-bootstrap.yaml`
+###
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  description: For ArgoCD applications
+  destinations:
+    - namespace: "argocd"
+      server: https://kubernetes.default.svc
+  sourceRepos:
+    - '*'
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: repo-gitops
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: git
+  name: gitops
+  url: https://github.com/tomlnd/gitops-demo.git
+  username: oauth2
+  password: xxxxxxxxxxxxxxx
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-configs
+  namespace: argocd
+spec:
+  project: argocd
+  source:
+    repoURL: https://github.com/tomlnd/gitops-demo.git
+    targetRevision: master
+    path: 'argocd'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

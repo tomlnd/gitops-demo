@@ -1,0 +1,52 @@
+prometheus:
+  enabled: true
+  prometheusSpec:
+    externalLabels:
+      cluster: "demo"
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}
+
+prometheus-node-exporter:
+  enabled: true
+
+kubeControllerManager:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+
+kubeProxy:
+  enabled: false
+
+grafana:
+  enabled: true
+  adminUser: admin
+  adminPassword: demo
+  defaultDashboardsTimezone: "Europe/Helsinki"
+  plugins:
+    - grafana-polystat-panel
+    - flant-statusmap-panel
+  service:
+    type: ClusterIP
+  persistence:
+    enabled: true
+    type: sts
+    storageClassName: managed-csi-premium-v2-retain
+    accessModes:
+      - ReadWriteOnce
+    size: 20Gi
+    finalizers:
+      - kubernetes.io/pvc-protection
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+    ingressClassName: nginx-internal
+    hosts:
+      - grafana.domain.com
+    path: /
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.domain.com

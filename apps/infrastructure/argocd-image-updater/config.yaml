@@ -1,0 +1,4 @@
+repoUrl: https://argoproj.github.io/argo-helm
+chartPath: argocd-image-updater
+chartVersion: 0.11.4
+namespace: argocd

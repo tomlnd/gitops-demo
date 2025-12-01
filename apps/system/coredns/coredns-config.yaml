@@ -1,0 +1,30 @@
+# custom coredns config to reduce DNS caching on systems that use host's DNS server to resolve k8s services
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  clusterlocal.server: |
+    cluster.local:53 {
+        errors
+        ready
+        health {
+          lameduck 5s
+        }
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+          ttl 5
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf
+        cache {
+          success 5 5
+          denial 5 5
+        }
+        loop
+        reload
+        loadbalance
+    }

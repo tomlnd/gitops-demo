@@ -1,0 +1,4 @@
+repoUrl: https://helm.k8ssandra.io/stable
+chartPath: k8ssandra-operator
+chartVersion: "1.20.2"
+namespace: k8ssandra-operator

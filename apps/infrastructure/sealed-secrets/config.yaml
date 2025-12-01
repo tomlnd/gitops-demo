@@ -1,0 +1,4 @@
+repoUrl: https://bitnami-labs.github.io/sealed-secrets
+chartPath: sealed-secrets
+chartVersion: "2.16.0"
+namespace: kube-system

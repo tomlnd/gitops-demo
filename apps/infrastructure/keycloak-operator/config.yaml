@@ -1,0 +1,4 @@
+repoUrl: https://github.com/keycloak/keycloak-k8s-resources
+gitPath: kubernetes
+chartVersion: "26.3.3"
+namespace: keycloak-system

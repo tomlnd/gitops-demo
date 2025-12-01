@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: appset-apps
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - git:
+        repoURL: 'https://github.com/tomlnd/gitops-demo.git'
+        revision: master
+        files:
+          - path: 'apps/infrastructure/*/config.yaml'
+  template:
+    metadata:
+      name: '{{ index .path.segments 2 }}'
+    spec:
+      project: '{{ index .path.segments 1 }}'
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+      sources: []
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: '{{ get . "namespace" | default (index .path.segments 2) }}'

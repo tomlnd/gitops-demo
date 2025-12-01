@@ -1,0 +1,4 @@
+repoUrl: https://kubernetes.github.io/ingress-nginx
+chartPath: ingress-nginx
+chartVersion: "4.12.1"
+namespace: ingress-nginx

@@ -1,0 +1,4 @@
+repoUrl: https://stakater.github.io/stakater-charts
+chartPath: reloader
+chartVersion: "1.2.0"
+namespace: reloader

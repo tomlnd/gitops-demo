@@ -1,0 +1,47 @@
+global:
+  domain: argocd.domain.com
+
+configs:
+  cm:
+    url: https://argocd.domain.com
+    oidc.config: |
+      name: Keycloak
+      issuer: https://sso.domain.com/realms/demo
+      clientID: argocd
+      clientSecret: $argocd-oidc-secret:oidc.keycloak.clientSecret
+      requestedScopes: ["openid", "profile", "email", "groups"]
+    admin.enabled: "false"
+    application.instanceLabelKey: argocd.argoproj.io/instance
+    timeout.hard.reconciliation: 0s
+    timeout.reconciliation: 180s
+    server.rbac.log.enforce.enable: "true"
+    statusbadge.enabled: "false"
+  rbac:
+    policy.default: role:readonly
+    policy.csv: |
+      g, /ArgoCD/admin, role:admin
+
+    policy.readonly-tenants.csv: |
+      p, role:readonly, applications, get, production/*, allow
+      p, role:readonly, clusters, get, *, allow
+      g, /ArgoCD/readonly, role:readonly
+  secret:
+    gitlabSecret: $gitlab-webhook:secret
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx-internal
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      cert-manager.io/cluster-issuer: letsencrypt
+    hosts:
+      - host: argocd.domain.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: argocd-server-tls
+        hosts:
+          - argocd.domain.com

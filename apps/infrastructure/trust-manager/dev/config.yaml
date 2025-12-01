@@ -1,0 +1,4 @@
+repoUrl: https://charts.jetstack.io
+chartPath: trust-manager
+chartVersion: "v0.19.0"
+namespace: cert-manager

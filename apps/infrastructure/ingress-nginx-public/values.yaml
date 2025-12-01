@@ -1,0 +1,6 @@
+controller:
+  replicaCount: 3
+  service:
+    annotations:
+      "service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path": /healthz
+  externalTrafficPolicy: Local

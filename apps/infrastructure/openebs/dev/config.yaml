@@ -1,0 +1,4 @@
+repoUrl: https://openebs.github.io/openebs
+chartPath: openebs
+chartVersion: 4.3.2
+namespace: openebs
