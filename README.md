@@ -1,6 +1,6 @@
 # GitOps Demo
 
-A demo GitOps repo that uses ArgoCD to deploy a bunch of example services.
+A demo GitOps repo that uses ArgoCD to deploy a bunch of example apps and configurations to a Kubernetes cluster.
 
 ## Structure
 
